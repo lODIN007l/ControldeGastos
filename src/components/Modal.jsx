@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Mensaje } from "./Mensaje";
 import CerrarBtn from "../img/cerrar.svg";
 
-const Modal = ({ setModal, animarModal, setAnimarModal }) => {
+const Modal = ({ setModal, animarModal, setAnimarModal, guardarGasto }) => {
+  const [mensaje, setMensaje] = useState("");
   const [nombre, setNombre] = useState("");
-  const [cantidad, setCantidad] = useState(0);
+  const [cantidad, setCantidad] = useState("");
   const [categoria, setCategoria] = useState("");
 
   const ocultarModal = () => {
@@ -12,13 +14,33 @@ const Modal = ({ setModal, animarModal, setAnimarModal }) => {
       setModal(false);
     }, 500);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // console.log("enviando frmlario");
+    if ([nombre, cantidad, categoria].includes("")) {
+      setMensaje("verifique los campos ");
+
+      setTimeout(() => {
+        setMensaje("");
+      }, 3000);
+
+      return;
+    }
+    guardarGasto({ nombre, cantidad, categoria });
+  };
+
   return (
     <div className="modal">
       <div className="cerrar-modal">
         <img src={CerrarBtn} alt="cerrrar modal" onClick={ocultarModal} />
       </div>
-      <form className={`formulario ${animarModal ? "animar" : "cerrar"}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`formulario ${animarModal ? "animar" : "cerrar"}`}
+      >
         <legend>Nuevo Gasto</legend>
+        {mensaje && <Mensaje tipo="error">{mensaje}</Mensaje>}
         <div className="campo">
           <label htmlFor="nombre">Nombre del gasto</label>
           <input
