@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  SwipeableList,
+  SwipeableListItem,
+  LeadingActions,
+  SwipeAction,
+  TrailingActions,
+} from "react-swipeable-list";
+import "react-swipeable-list/dist/styles.css";
 import { formatearFecha } from "../helpers/index";
 
 import IconoGasto from "../img/icono_gastos.svg";
@@ -19,23 +27,44 @@ const diccionarioIconos = {
   suscripciones: IconoSuscripciones,
 };
 
-const GastoC = ({ gasto }) => {
+const GastoC = ({ gasto, setGastoEditar, eliminarGasto }) => {
   //destruccion ,sacamos una parte del objeto de gasto
   const { categoria, nombre, cantidad, id, fecha } = gasto;
+
+  const leadingActions = () => (
+    <LeadingActions>
+      <SwipeAction onClick={() => setGastoEditar(gasto)}>Editar</SwipeAction>
+    </LeadingActions>
+  );
+  const trailingActions = () => (
+    <TrailingActions>
+      <SwipeAction destructive={true} onClick={() => eliminarGasto(id)}>
+        Eliminar
+      </SwipeAction>
+    </TrailingActions>
+  );
+
   return (
-    <div className="gasto sombra">
-      <div className="contenido-gasto">
-        <img src={diccionarioIconos[categoria]} alt="Icono Gasto" />
-        <div className="descripcion-gasto">
-          <p className="categoria">{categoria}</p>
-          <p className="nombre-gasto">{nombre}</p>
-          <p className="fecha-gasto">
-            Agregado el <span>{formatearFecha(fecha)}</span>
-          </p>
+    <SwipeableList>
+      <SwipeableListItem
+        leadingActions={leadingActions()}
+        trailingActions={trailingActions()}
+      >
+        <div className="gasto sombra">
+          <div className="contenido-gasto">
+            <img src={diccionarioIconos[categoria]} alt="Icono Gasto" />
+            <div className="descripcion-gasto">
+              <p className="categoria">{categoria}</p>
+              <p className="nombre-gasto">{nombre}</p>
+              <p className="fecha-gasto">
+                Agregado el <span>{formatearFecha(fecha)}</span>
+              </p>
+            </div>
+          </div>
+          <p className="cantidad-gasto">${cantidad}</p>
         </div>
-      </div>
-      <p className="cantidad-gasto">${cantidad}</p>
-    </div>
+      </SwipeableListItem>
+    </SwipeableList>
   );
 };
 
